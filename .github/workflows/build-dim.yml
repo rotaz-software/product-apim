@@ -1,0 +1,35 @@
+name: Build DIM
+
+on:
+  push:
+    branches: ['rotaz/**']
+  pull_request:
+    branches: ['rotaz/main']
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build
+        run: mvn clean install -DskipTests -q --file all-in-one-apim/pom.xml
+
+      - name: Test
+        run: mvn test -q --file all-in-one-apim/pom.xml
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: product-apim-rotaz
+          path: all-in-one-apim/modules/distribution/product/target/*.zip
+          if-no-files-found: warn
