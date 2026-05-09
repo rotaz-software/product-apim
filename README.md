@@ -1,3 +1,16 @@
+> **Rotaz Fork** — Este repositório é um fork oficial mantido por [Rotaz Software](https://github.com/rotaz-software).
+> Branch principal: `rotaz/main` | Release atual: `4.7.0-rotaz-01` | Upstream: [wso2/product-apim](https://github.com/wso2/product-apim)
+>
+> | Documento | Descrição |
+> |-----------|-----------|
+> | [ROTAZ_CUSTOMIZATIONS.md](./ROTAZ_CUSTOMIZATIONS.md) | Catálogo de customizações e risk assessment |
+> | [docs/SYNC_PROCESS.md](./docs/SYNC_PROCESS.md) | Como sincronizar com o upstream WSO2 |
+> | [docs/MERGE_CONFLICTS.md](./docs/MERGE_CONFLICTS.md) | Playbook de resolução de conflitos |
+> | [docs/RELEASE_PROCESS.md](./docs/RELEASE_PROCESS.md) | Como criar e publicar releases |
+> | [ROTAZ_CHANGELOG.md](./ROTAZ_CHANGELOG.md) | Histórico de releases Rotaz |
+
+---
+
 <img src="https://wso2.cachefly.net/wso2/sites/all/image_resources/wso2-branding-logos/wso2-logo-orange.png" alt="WSO2 logo" width=30% height=30% />
 
 # WSO2 API Manager
