@@ -1,7 +1,12 @@
 # Lines starting with '#' are comments.
 # Each line is a file pattern followed by one or more owners.
-
 # See: https://help.github.com/articles/about-codeowners/
 
-# These owners will be the default owners for everything in the repo.
-*   @tharindu1st @AnuGayan @chamilaadhi @Arshardh
+# Rotaz fork — all changes require Rotaz team review
+*   @rotaz-software
+
+# Rotaz-specific files — Rotaz team only
+ROTAZ_*.md              @rotaz-software
+docs/                   @rotaz-software
+rotaz/                  @rotaz-software
+.github/workflows/      @rotaz-software

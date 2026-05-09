@@ -1,9 +1,14 @@
 blank_issues_enabled: false
 contact_links:
-- name: '📚 Create an Issue'
-  about: Create an issue if something does not work as expected or suggest new functionality/improvements to the product suite.
-  url: https://github.com/wso2/api-manager/issues/new/choose
-- name: '💬 Slack Channel'
-  url: 'https://apim-slack.wso2.com/'
-  about: |
-    Chat with the community to get quick clarifications for your questions.
+  - name: '📄 MERGE_CONFLICTS.md — Resolução de conflitos'
+    url: https://github.com/rotaz-software/product-apim/blob/rotaz/main/docs/MERGE_CONFLICTS.md
+    about: Guia passo a passo para resolver conflitos de merge com o upstream WSO2.
+  - name: '📄 ROTAZ_CUSTOMIZATIONS.md — Catálogo de customizações'
+    url: https://github.com/rotaz-software/product-apim/blob/rotaz/main/ROTAZ_CUSTOMIZATIONS.md
+    about: Risk assessment e documentação de todas as customizações Rotaz ativas.
+  - name: '🔄 GitHub Actions — Sync Upstream'
+    url: https://github.com/rotaz-software/product-apim/actions/workflows/sync-upstream.yml
+    about: Status e histórico do sync automático semanal com wso2/product-apim.
+  - name: '📚 WSO2 Community — Stack Overflow'
+    url: https://stackoverflow.com/tags/wso2-am/
+    about: Dúvidas sobre o WSO2 API Manager (upstream) — community support.
