@@ -30,6 +30,21 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: product-apim-rotaz
+          name: product-apim-rotaz-${{ github.ref_name }}
           path: all-in-one-apim/modules/distribution/product/target/*.zip
+          retention-days: 30
           if-no-files-found: warn
+
+      - name: Trigger DIM Builder
+        if: github.ref_name == 'rotaz/main' && github.event_name == 'push'
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.DIM_BUILDER_PAT }}
+          repository: rotaz-software/dim-builder
+          event-type: fork-build-ready
+          client-payload: |
+            {
+              "branch": "${{ github.ref_name }}",
+              "version": "4.7.0",
+              "sha": "${{ github.sha }}"
+            }
