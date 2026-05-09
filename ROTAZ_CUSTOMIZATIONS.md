@@ -16,7 +16,66 @@ Ao mergear um novo feature branch, atualizar este arquivo:
 
 | ID | Categoria | Status | Branch | Risco de Conflito |
 |----|-----------|--------|--------|-------------------|
-| — | — | — | — | — |
+| ROT-001 | INFRA | ✅ ACTIVE | `rotaz/main` | ✅ LOW |
+| ROT-002 | INFRA | ✅ ACTIVE | `rotaz/main` | ✅ LOW |
+| ROT-003 | INFRA | ✅ ACTIVE | `rotaz/main` | ✅ LOW |
+
+---
+
+## Customizações Detalhadas
+
+### [INFRA] CI/CD Pipelines (ROT-001)
+
+**Status:** ✅ ACTIVE
+**Branch:** `rotaz/main`
+**Files Modified:** 3
+- `.github/workflows/sync-upstream.yml`
+- `.github/workflows/build-dim.yml`
+- `.github/workflows/security-scan.yml`
+**Version:** 1.0
+
+**Description:**
+Pipelines de CI/CD Rotaz: sync semanal com upstream, build Maven, Trivy security scan.
+
+**Upstream Conflict Risk:** ✅ LOW
+- WSO2 não mantém esses workflows — sem risco de conflito.
+
+---
+
+### [INFRA] Rotaz Documentation (ROT-002)
+
+**Status:** ✅ ACTIVE
+**Branch:** `rotaz/main`
+**Files Modified:** 4
+- `ROTAZ_CUSTOMIZATIONS.md`
+- `ROTAZ_CHANGELOG.md`
+- `ROTAZ_ROADMAP.md`
+- `ROTAZ_SECURITY.md`
+**Version:** 1.0
+
+**Description:**
+Documentação de governança do fork: catálogo de customizações, changelog, roadmap e política de segurança.
+
+**Upstream Conflict Risk:** ✅ LOW
+- Arquivos exclusivos Rotaz — WSO2 não os possui.
+
+---
+
+### [INFRA] Sync Scripts (ROT-003)
+
+**Status:** ✅ ACTIVE
+**Branch:** `rotaz/main`
+**Files Modified:** 3
+- `rotaz/scripts/prepare-sync.sh`
+- `rotaz/scripts/sync-merge.sh`
+- `rotaz/scripts/verify-sync.sh`
+**Version:** 1.0
+
+**Description:**
+Scripts manuais para executar e validar o ciclo de sync com o upstream WSO2.
+
+**Upstream Conflict Risk:** ✅ LOW
+- Diretório `rotaz/` exclusivo Rotaz — sem risco de conflito upstream.
 
 ---
 
