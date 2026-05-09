@@ -18,9 +18,15 @@ Versioning: `<WSO2-VERSION>-rotaz-<PATCH>` (e.g. `4.7.0-rotaz-01`)
 - Added `ROTAZ_ROADMAP.md` — planned customizations roadmap
 - Added `ROTAZ_SECURITY.md` — security patch policy
 
+### Infrastructure
+- Added `rotaz/scripts/prepare-sync.sh` — pre-sync validation script
+- Added `rotaz/scripts/sync-merge.sh` — upstream merge script
+- Added `rotaz/scripts/verify-sync.sh` — post-sync build/test/security validation
+
 ### Upstream Sync
 - Fork base: WSO2/product-apim `master` branch (May 2026)
 - Default branch set to `rotaz/main`
+- [2026-05-09] First sync with upstream WSO2 (upstream/master @ 6ffbcdb77d) — clean, 0 conflicts
 
 ---
 
