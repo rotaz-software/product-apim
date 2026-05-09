@@ -25,7 +25,8 @@ jobs:
           format: 'sarif'
           output: 'trivy-results.sarif'
           timeout: '20m'
-          skip-dirs: '.git,**/test,**/tests,**/it/src'
+          scanners: 'vuln'
+          skip-dirs: '.git,all-in-one-apim,**/target,**/test,**/tests'
 
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@v3
