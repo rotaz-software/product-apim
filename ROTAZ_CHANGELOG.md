@@ -9,31 +9,35 @@ Versioning: `<WSO2-VERSION>-rotaz-<PATCH>` (e.g. `4.7.0-rotaz-01`)
 
 ## [Unreleased]
 
-### Infrastructure
-- Added `.github/workflows/sync-upstream.yml` — weekly auto-sync with WSO2 upstream (Mondays 06:00 UTC)
-- Added `.github/workflows/build-dim.yml` — Maven build + test CI on `rotaz/**` branches and PRs
-- Added `.github/workflows/security-scan.yml` — Trivy vulnerability scan (Mondays 08:00 UTC + push)
-- Added `ROTAZ_CUSTOMIZATIONS.md` — customization catalog and merge conflict playbook
-- Added `ROTAZ_CHANGELOG.md` — this file
-- Added `ROTAZ_ROADMAP.md` — planned customizations roadmap
-- Added `ROTAZ_SECURITY.md` — security patch policy
-
-### Infrastructure
-- Added `rotaz/scripts/prepare-sync.sh` — pre-sync validation script
-- Added `rotaz/scripts/sync-merge.sh` — upstream merge script
-- Added `rotaz/scripts/verify-sync.sh` — post-sync build/test/security validation
-
-### Upstream Sync
-- Fork base: WSO2/product-apim `master` branch (May 2026)
-- Default branch set to `rotaz/main`
-- [2026-05-09] First sync with upstream WSO2 (upstream/master @ 6ffbcdb77d) — clean, 0 conflicts
+_Nenhuma mudança pendente._
 
 ---
 
 ## [4.7.0-rotaz-01] — 2026-05-09
 
-### Initial Setup
-- Fork created from `wso2/product-apim`
-- Branch `rotaz/main` created as Rotaz customization base
-- GitHub Actions CI/CD pipelines configured
-- Rotaz documentation files initialized
+### Infrastructure
+- Fork criado a partir de `wso2/product-apim` (upstream/master @ `6ffbcdb77d`)
+- Branch `rotaz/main` criado como base de desenvolvimento Rotaz
+- Default branch alterado de `master` para `rotaz/main`
+- `.github/workflows/sync-upstream.yml` — sync semanal automático com upstream (segundas 06:00 UTC)
+- `.github/workflows/build-dim.yml` — Maven build + test CI em pushes `rotaz/**` e PRs
+- `.github/workflows/security-scan.yml` — Trivy vuln scan (segundas 08:00 UTC + push em `rotaz/main`)
+- `.github/workflows/release.yml` — release automático ao criar tag `*-rotaz-*`
+- `ROTAZ_CUSTOMIZATIONS.md` — catálogo de customizações (ROT-001/002/003) com risk assessment
+- `ROTAZ_CHANGELOG.md` — este arquivo
+- `ROTAZ_ROADMAP.md` — roadmap Q3/Q4 2026 (DB Query Caching, JWT Claims, Connection Pool, etc.)
+- `ROTAZ_SECURITY.md` — política de patches por severidade (SLA 24h para CRITICAL)
+- `docs/MERGE_CONFLICTS.md` — playbook com 4 cenários validados por simulação real
+- `docs/SYNC_PROCESS.md` — guia completo de sincronização automática e manual
+- `docs/RELEASE_PROCESS.md` — guia de versionamento, release checklist, hotfix flow
+- `rotaz/scripts/prepare-sync.sh` — validação pré-sync
+- `rotaz/scripts/sync-merge.sh` — merge upstream com detecção de conflitos
+- `rotaz/scripts/verify-sync.sh` — build + testes + Trivy + atualização automática do changelog
+
+### Upstream Sync
+- [2026-05-09] Primeiro sync com upstream WSO2 — upstream/master @ `6ffbcdb77d` — clean, 0 conflitos
+- Resolução de conflitos testada e documentada (cenários pom.xml e deployment.toml)
+
+### Security
+- Trivy security scan configurado — SARIF upload para GitHub Security tab
+- `sync-conflict` label criada para issues automáticas em caso de conflito de merge
