@@ -1,0 +1,87 @@
+name: Sync Upstream WSO2
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Toda segunda-feira às 06:00 UTC
+  workflow_dispatch:       # Execução manual via GitHub Actions UI
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout rotaz/main
+        uses: actions/checkout@v4
+        with:
+          ref: rotaz/main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "rotaz-bot"
+          git config user.email "bot@rotaz.app.br"
+
+      - name: Add upstream remote
+        run: git remote add upstream https://github.com/wso2/product-apim.git
+
+      - name: Fetch upstream
+        run: |
+          git fetch upstream master
+          git fetch upstream --tags
+
+      - name: Merge upstream
+        id: merge
+        run: |
+          if git merge upstream/master -m "chore: sync WSO2 upstream $(date +%Y-%m-%d)"; then
+            echo "CONFLICTS=false" >> $GITHUB_OUTPUT
+          else
+            git merge --abort
+            echo "CONFLICTS=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Push if clean
+        if: steps.merge.outputs.CONFLICTS == 'false'
+        run: git push origin rotaz/main
+
+      - name: Open issue on conflict
+        if: steps.merge.outputs.CONFLICTS == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `⚠️ Sync conflict detected - ${new Date().toISOString().split('T')[0]}`,
+              body: [
+                '## Conflito detectado no sync automático',
+                '',
+                'O sync semanal com `upstream/master` detectou conflitos.',
+                'Resolução manual necessária.',
+                '',
+                '### Como resolver',
+                '```bash',
+                'cd /projects/rotaz/repos/product-apim',
+                'git fetch upstream master',
+                'git checkout rotaz/main',
+                'git merge upstream/master',
+                '# Resolver conflitos manualmente',
+                '# Consultar ROTAZ_CUSTOMIZATIONS.md para guia',
+                'git push origin rotaz/main',
+                '```',
+                '',
+                '📄 Ver: [FORK_STRATEGY.md — Merge Conflict Playbook](https://github.com/rotaz-software/dim-builder/blob/main/docs/FORK_STRATEGY.md#merge-conflict-playbook)'
+              ].join('\n'),
+              labels: ['sync-conflict']
+            })
+
+      - name: Summary
+        run: |
+          if [ "${{ steps.merge.outputs.CONFLICTS }}" = "false" ]; then
+            echo "✅ Sync completo — rotaz/main atualizado com upstream/master"
+          else
+            echo "⚠️ Conflitos detectados — issue aberta para resolução manual"
+          fi
