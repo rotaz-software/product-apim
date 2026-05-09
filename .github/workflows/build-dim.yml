@@ -16,7 +16,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
 
@@ -27,10 +27,10 @@ jobs:
           cache: maven
 
       - name: Build
-        run: mvn clean install -DskipTests -q --file all-in-one-apim/pom.xml
+        run: mvn clean install -DskipTests -T 2 --no-transfer-progress --file all-in-one-apim/pom.xml
 
       - name: Test
-        run: mvn test -q --file all-in-one-apim/pom.xml
+        run: mvn test -T 2 --no-transfer-progress --file all-in-one-apim/pom.xml
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
