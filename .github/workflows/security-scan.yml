@@ -27,6 +27,8 @@ jobs:
           timeout: '20m'
           scanners: 'vuln'
           skip-dirs: '.git,all-in-one-apim,**/target,**/test,**/tests'
+        env:
+          TRIVY_OFFLINE_SCAN: true
 
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@v3
