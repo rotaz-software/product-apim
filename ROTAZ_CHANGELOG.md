@@ -9,7 +9,9 @@ Versioning: `<WSO2-VERSION>-rotaz-<PATCH>` (e.g. `4.7.0-rotaz-01`)
 
 ## [Unreleased]
 
-_Nenhuma mudança pendente._
+### Infrastructure
+- `sync-upstream.yml` melhorado: GitHub Job Summary com métricas, Slack notification (opcional via `SLACK_WEBHOOK_URL` secret), conflict issue link atualizado para `docs/MERGE_CONFLICTS.md`
+- Issues habilitadas em `rotaz-software/product-apim` (necessário para issues `sync-conflict`)
 
 ---
 

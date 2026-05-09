@@ -33,15 +33,27 @@ jobs:
           git fetch upstream master
           git fetch upstream --tags
 
+      - name: Count pending commits
+        id: metrics
+        run: |
+          AHEAD=$(git log --oneline rotaz/main..upstream/master | wc -l | tr -d ' ')
+          UPSTREAM_SHA=$(git rev-parse --short upstream/master)
+          echo "ahead=$AHEAD" >> $GITHUB_OUTPUT
+          echo "upstream_sha=$UPSTREAM_SHA" >> $GITHUB_OUTPUT
+          echo "date=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
+          echo "upstream/master está $AHEAD commit(s) à frente de rotaz/main (@ $UPSTREAM_SHA)"
+
       - name: Merge upstream
         id: merge
         run: |
+          START=$(date +%s)
           if git merge upstream/master -m "chore: sync WSO2 upstream $(date +%Y-%m-%d)"; then
             echo "CONFLICTS=false" >> $GITHUB_OUTPUT
           else
             git merge --abort
             echo "CONFLICTS=true" >> $GITHUB_OUTPUT
           fi
+          echo "duration=$(( $(date +%s) - START ))" >> $GITHUB_OUTPUT
 
       - name: Push if clean
         if: steps.merge.outputs.CONFLICTS == 'false'
@@ -68,20 +80,52 @@ jobs:
                 'git fetch upstream master',
                 'git checkout rotaz/main',
                 'git merge upstream/master',
-                '# Resolver conflitos manualmente',
-                '# Consultar ROTAZ_CUSTOMIZATIONS.md para guia',
+                '# Resolver conflitos — consultar docs/MERGE_CONFLICTS.md para guia por cenário',
                 'git push origin rotaz/main',
                 '```',
                 '',
-                '📄 Ver: [FORK_STRATEGY.md — Merge Conflict Playbook](https://github.com/rotaz-software/dim-builder/blob/main/docs/FORK_STRATEGY.md#merge-conflict-playbook)'
+                '📄 Ver: [docs/MERGE_CONFLICTS.md](https://github.com/rotaz-software/product-apim/blob/rotaz/main/docs/MERGE_CONFLICTS.md)',
+                '📄 Ver: [ROTAZ_CUSTOMIZATIONS.md](https://github.com/rotaz-software/product-apim/blob/rotaz/main/ROTAZ_CUSTOMIZATIONS.md) — risk assessment por arquivo'
               ].join('\n'),
               labels: ['sync-conflict']
             })
 
-      - name: Summary
+      - name: Job summary
+        if: always()
         run: |
-          if [ "${{ steps.merge.outputs.CONFLICTS }}" = "false" ]; then
-            echo "✅ Sync completo — rotaz/main atualizado com upstream/master"
+          DATE="${{ steps.metrics.outputs.date }}"
+          AHEAD="${{ steps.metrics.outputs.ahead }}"
+          SHA="${{ steps.metrics.outputs.upstream_sha }}"
+          DURATION="${{ steps.merge.outputs.duration }}"
+          CONFLICTS="${{ steps.merge.outputs.CONFLICTS }}"
+
+          echo "## Sync Upstream WSO2 — $DATE" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Métrica | Valor |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| upstream/master | \`$SHA\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commits incorporados | $AHEAD |" >> $GITHUB_STEP_SUMMARY
+          echo "| Duração do merge | ${DURATION}s |" >> $GITHUB_STEP_SUMMARY
+          if [ "$CONFLICTS" = "false" ]; then
+            echo "| Resultado | ✅ Limpo — push automático realizado |" >> $GITHUB_STEP_SUMMARY
           else
-            echo "⚠️ Conflitos detectados — issue aberta para resolução manual"
+            echo "| Resultado | ⚠️ Conflitos — issue aberta para resolução manual |" >> $GITHUB_STEP_SUMMARY
           fi
+
+      - name: Notify Slack
+        if: always() && env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          CONFLICTS: ${{ steps.merge.outputs.CONFLICTS }}
+          AHEAD: ${{ steps.metrics.outputs.ahead }}
+          SHA: ${{ steps.metrics.outputs.upstream_sha }}
+          DATE: ${{ steps.metrics.outputs.date }}
+        run: |
+          if [ "$CONFLICTS" = "false" ]; then
+            TEXT="✅ *Sync WSO2 upstream concluído* ($DATE)\nCommits incorporados: $AHEAD | upstream/master @ \`$SHA\`\n<https://github.com/rotaz-software/product-apim/actions/workflows/sync-upstream.yml|Ver Actions>"
+          else
+            TEXT="⚠️ *Sync WSO2 upstream com CONFLITOS* ($DATE)\n<https://github.com/rotaz-software/product-apim/issues?q=label%3Async-conflict+is%3Aopen|Ver issue sync-conflict>\nResolução manual necessária — ver \`docs/MERGE_CONFLICTS.md\`"
+          fi
+          curl -s -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-type: application/json' \
+            --data "{\"text\":\"$TEXT\"}"
