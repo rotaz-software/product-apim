@@ -6,12 +6,17 @@ on:
   pull_request:
     branches: ['rotaz/main']
 
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -35,8 +40,17 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
 
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::error::Build DIM falhou em ${{ github.ref_name }} — ver logs acima"
+          echo "## ❌ Build falhou" >> $GITHUB_STEP_SUMMARY
+          echo "Branch: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "Commit: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_STEP_SUMMARY
+
       - name: Trigger DIM Builder
-        if: github.ref_name == 'rotaz/main' && github.event_name == 'push'
+        if: github.ref_name == 'rotaz/main' && github.event_name == 'push' && success()
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.DIM_BUILDER_PAT }}
