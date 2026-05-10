@@ -27,10 +27,10 @@ jobs:
           cache: maven
 
       - name: Build
-        run: mvn clean install -DskipTests -T 2 --no-transfer-progress --file all-in-one-apim/pom.xml
+        run: mvn clean install -DskipTests --no-transfer-progress --file all-in-one-apim/pom.xml
 
       - name: Test
-        run: mvn test -T 2 --no-transfer-progress --file all-in-one-apim/pom.xml
+        run: mvn test --no-transfer-progress --file all-in-one-apim/pom.xml
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
